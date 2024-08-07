@@ -191,11 +191,11 @@ bool DS18B20_CheckPresence(void) {
     return presence == 0;
 }
 
-bool DS18B20_ReadTempSingleDev(float *temp) {
+bool DS18B20_RunMeasurementSingle(int *delayBeforeReadMs) {
     // Initialization sequence - send reset and check presence
     int presence = resetAndPresence();
     if (presence) {
-        platform.debugPrint("DS18B20: Failed to read temperature, sensor not present\r\n");
+        platform.debugPrint("DS18B20: Failed to run conversion, sensor not present\r\n");
         return false;
     }
 
@@ -205,14 +205,18 @@ bool DS18B20_ReadTempSingleDev(float *temp) {
     // Send temperature conversion command
     writeByte(CMD_CONVERT_T);
 
-    // Wait for conversion time, DQ line held high by strong pullup
-    // TODO: can wait less depends on conversion configuration
-    platform.delayUs(750 * 1000); // 750ms
+    // Output conversion time
+    // TODO: depends on conversion configuration
+    *delayBeforeReadMs = 750;
 
-    // Send reset and check presence
-    presence = resetAndPresence();
+    return true;
+}
+
+bool DS18B20_ReadTempSingle(float *temp) {
+     // Send reset and check presence
+    int presence = resetAndPresence();
     if (presence) {
-        platform.debugPrint("DS18B20: Failed to read temperature, sensor not present (after conversion)\r\n");
+        platform.debugPrint("DS18B20: Failed to read temperature, sensor not present\r\n");
         return false;
     }
 

@@ -27,6 +27,7 @@ struct DS18B20_Platform {
 void DS18B20_Init(struct DS18B20_Platform *platform);
 bool DS18B20_CheckPresence(void);
 
-bool DS18B20_ReadTempSingleDev(float *temp);
+bool DS18B20_RunMeasurementSingle(int *delayBeforeReadMs);
+bool DS18B20_ReadTempSingle(float *temp);
 
 #endif // DS18B20_H
