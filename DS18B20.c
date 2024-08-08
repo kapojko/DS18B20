@@ -205,15 +205,21 @@ bool DS18B20_RunMeasurementSingle(int *delayBeforeReadMs) {
     // Send temperature conversion command
     writeByte(CMD_CONVERT_T);
 
+    // Drive bus with bank VCC if separate power supply not provided
+    if (platform.flags & DS18B20_FLAG_PARASITE_POWER) {
+        platform.gpioSwitch(DS18B20_GPIO_PULLUP_OUTPUT);
+        platform.gpioSet(1);
+    }
+
     // Output conversion time
     // TODO: depends on conversion configuration
-    *delayBeforeReadMs = 750;
+    *delayBeforeReadMs = 1000;
 
     return true;
 }
 
 bool DS18B20_ReadTempSingle(float *temp) {
-     // Send reset and check presence
+    // Send reset and check presence
     int presence = resetAndPresence();
     if (presence) {
         platform.debugPrint("DS18B20: Failed to read temperature, sensor not present\r\n");

@@ -3,6 +3,8 @@
 
 #include <stdbool.h>
 
+#define DS18B20_FLAG_PARASITE_POWER 0x1
+
 enum DS18B20_Resolution {
     DS18B20_RESOLUTION_9_BIT = 0, // max conversion time 93.75ms
     DS18B20_RESOLUTION_10_BIT = 1, // max conversion time 187.5ms
@@ -22,6 +24,8 @@ struct DS18B20_Platform {
 
     void (*delayUs)(int us);
     void (*debugPrint)(const char *fmt, ...);
+
+    int flags;
 };
 
 void DS18B20_Init(struct DS18B20_Platform *platform);
